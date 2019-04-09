@@ -14,4 +14,5 @@ class Note:
         self.updateTimestamp = int(note['updateTimestamp'])
         self.timestamp = int(note['timestamp'])
         self.tags = note['tags'].split(',')
-        self.content = loads(note['description'])['note']['text']
+        noteContent = loads(note['description'])
+        self.content = noteContent['note'][0]['text']

@@ -2,48 +2,55 @@ from argparse import ArgumentParser
 from pathlib import Path
 import json
 
-from note import Note
-from notable import exportNotes as exportToNotable
+from .note import Note
+from .notable import exportNotes as exportToNotable
 
-if __name__ == '__main__':
-    parser = ArgumentParser('Scarlet Notes data export program')
+def main():
+    """
+    Program entry point.
+    """
+    parser = ArgumentParser(
+        prog='scarlet_export',
+        description='Scarlet Notes data export program'
+    )
     parser.add_argument(
         '-t', dest='program',
-        type='str',
+        type=str,
         help='the file format the data will be exported to [notable]',
-        optional=True
+        required=False,
+        default='notable'
     )
     parser.add_argument(
         '-o', dest='outputDirName',
-        type='str',
+        type=str,
         help='output directory (where the data will be saved to)',
-        optional=False,
+        required=True
     )
     parser.add_argument(
-        'inputFile', dest='inputFileName',
-        type='str',
-        help='input file (the .txt file from Scarlet Notes)',
-        optional=False
+        dest='inputFileName',
+        type=str,
+        help='input file (the .txt file from Scarlet Notes)'
     )
     args = parser.parse_args()
     # check if the input file exists
-    inputPath = Path(args['inputFileName'])
+    inputPath = Path(args.inputFileName)
     if not inputPath.is_file():
         print('File {0} does not exist. Exiting.'.format(
-            args['inputFileName']
+            args.inputFileName
         ))
         exit(1)
     # create the output dir if it doesn't exist yet
-    outputPath = Path(args['outputDirName'])
-    if not outputPath.exists() and not outputPath.is_file():
-        outputPath.mkdir()
-    else:
+    outputPath = Path(args.outputDirName)
+    try:
+        if not outputPath.exists() and not outputPath.is_file():
+            outputPath.mkdir()
+    except IOError:
         print('Cannot create directory {0}. Exiting.'.format(
-            args['outputDirName']
+            args.outputDirName
         ))
         exit(1)
     # read and parse the file as JSON
-    with open(args['inputFileName']) as inputFile:
+    with open(args.inputFileName, encoding='utf-8') as inputFile:
         try:
             data = json.load(inputFile)
         except json.JSONDecodeError:
@@ -56,11 +63,11 @@ if __name__ == '__main__':
         notes.append(parsedNote)
     # currently the script only supports a single program to export the
     # data to
-    if args['program'] == 'notable':
-        exportToNotable(notes, args['outputDirName'])
+    if args.program == 'notable':
+        exportToNotable(notes, args.outputDirName)
     else:
         print('The program {0} is currently not supported.'.format(
-            args['program']
+            args.program
         ))
         print('Exiting.')
         exit(1)

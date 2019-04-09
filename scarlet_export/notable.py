@@ -1,5 +1,6 @@
-from datetime import datetime
+from time import gmtime, strftime
 from json import loads
+from pathlib import Path
 
 def exportNotes(notesList, outputDir):
     """
@@ -21,16 +22,28 @@ def exportNotes(notesList, outputDir):
         for tag in note.tags:
             tags += tag + ','
         tags.rstrip(',')
-        created = datetime.utcfromtimestamp(note.timestamp)
-        modified = datetime.utcfromtimestamp(note.updateTimestamp)
-        with open(outputFileName) as output:
+        createdTime = gmtime(note.timestamp / 1000)
+        modifiedTime = gmtime(note.updateTimestamp / 1000)
+        created = strftime(
+            '%Y-%m-%dT%H:%M:%SZ',
+            createdTime
+        )
+        modified = strftime(
+            '%Y-%m-%dT%H:%M:%SZ',
+            modifiedTime
+        )
+        # check if the folder exists
+        outputPath = Path(outputFolder)
+        if not outputPath.is_dir():
+            outputPath.mkdir()
+        with open(outputFileName, encoding='utf-8', mode='w') as output:
             # print YAML front matter first
-            output.write('---')
-            output.write('created: {0}'.format(created))
-            output.write('modified: {0}'.format(modified))
-            output.write('tags: [{0}]'.format(tags))
-            output.write('---')
-            output.write('') # an empty string
+            output.write('---\n')
+            output.write('created: {0}\n'.format(created))
+            output.write('modified: {0}\n'.format(modified))
+            output.write('tags: [{0}]\n'.format(tags))
+            output.write('---\n')
+            output.write('\n') # an empty string
             # dump the note text as well, contained in another
             # JSON-formatted string
             output.write(note.content)
