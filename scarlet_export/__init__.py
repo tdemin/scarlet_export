@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 import json
 
+from note import Note
 from notable import exportNotes as exportToNotable
 
 if __name__ == '__main__':
@@ -48,11 +49,15 @@ if __name__ == '__main__':
         except json.JSONDecodeError:
             print('Could not parse the input file.')
             exit(1)
-    inputFile.close()
+    # do parsing
+    notes = []
+    for note in data['notes']:
+        parsedNote = Note(note)
+        notes.append(parsedNote)
     # currently the script only supports a single program to export the
     # data to
     if args['program'] == 'notable':
-        exportToNotable(data, args['outputDirName'])
+        exportToNotable(notes, args['outputDirName'])
     else:
         print('The program {0} is currently not supported.'.format(
             args['program']
