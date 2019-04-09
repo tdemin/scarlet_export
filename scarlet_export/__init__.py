@@ -58,8 +58,14 @@ def main():
             exit(1)
     # do parsing
     notes = []
+    tags = {}
+    for tag in data['tags']:
+        tags[tag['uuid']] = tag['title']
+    folders = {}
+    for folder in data['folders']:
+        folders[folder['uuid']] = folder['title']
     for note in data['notes']:
-        parsedNote = Note(note)
+        parsedNote = Note(note, tags, folders)
         notes.append(parsedNote)
     # currently the script only supports a single program to export the
     # data to

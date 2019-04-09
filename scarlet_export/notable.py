@@ -16,7 +16,6 @@ def exportNotes(notesList, outputDir):
             outputFolder = outputDir + '/' + note.folder
         else:
             outputFolder = outputDir
-        outputFileName = outputFolder + '/' + note.uuid + '.md'
         # make up a string containing all of the tags
         tags = ''
         for tag in note.tags:
@@ -32,6 +31,8 @@ def exportNotes(notesList, outputDir):
             '%Y-%m-%dT%H:%M:%SZ',
             modifiedTime
         )
+        outputFileName = outputFolder + '/' \
+            + created.replace(':', '') + '.md'
         # check if the folder exists
         outputPath = Path(outputFolder)
         if not outputPath.is_dir():
