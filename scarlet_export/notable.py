@@ -31,8 +31,12 @@ def exportNotes(notesList, outputDir):
             '%Y-%m-%dT%H:%M:%SZ',
             modifiedTime
         )
-        outputFileName = outputFolder + '/' \
-            + created.replace(':', '') + '.md'
+        # use the heading as note file name if there is one
+        if note.title != '':
+            outputFileName = outputFolder + '/' + note.title + '.md'
+        else:
+            outputFileName = outputFolder + '/' \
+                + created.replace(':', '') + '.md'
         # check if the folder exists
         outputPath = Path(outputFolder)
         if not outputPath.is_dir():
@@ -40,6 +44,8 @@ def exportNotes(notesList, outputDir):
         with open(outputFileName, encoding='utf-8', mode='w') as output:
             # print YAML front matter first
             output.write('---\n')
+            if note.title != '':
+                output.write('title: {0}\n'.format(note.title))
             output.write('created: {0}\n'.format(created))
             output.write('modified: {0}\n'.format(modified))
             output.write('tags: [{0}]\n'.format(tags))

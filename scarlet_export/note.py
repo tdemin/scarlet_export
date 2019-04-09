@@ -23,5 +23,11 @@ class Note:
         for tag in note['tags'].split(','):
             if tag != '':
                 self.tags.append(tags[tag])
-        noteContent = loads(note['description'])
-        self.content = noteContent['note'][0]['text']
+        noteContent = loads(note['description'])['note']
+        # note headings are optional in Scarlet
+        if len(noteContent) > 1:
+            self.title = noteContent[0]['text']
+            self.content = noteContent[1]['text']
+        else:
+            self.content = noteContent[0]['text']
+            self.title = ''
