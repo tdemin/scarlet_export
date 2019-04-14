@@ -1,5 +1,4 @@
 from time import gmtime, strftime
-from json import loads
 from pathlib import Path
 
 def exportNotes(notesList, outputDir):
@@ -54,4 +53,3 @@ def exportNotes(notesList, outputDir):
             # dump the note text as well, contained in another
             # JSON-formatted string
             output.write(note.content)
-    return
