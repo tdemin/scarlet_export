@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
+from json import load, JSONDecodeError
 from pathlib import Path
-import json
 
-from .note import Note
-from .notable import exportNotes as exportToNotable
+from scarlet_export.note import Note
+from scarlet_export.notable import exportNotes as exportToNotable
 
 def main():
     """
@@ -52,8 +52,8 @@ def main():
     # read and parse the file as JSON
     with open(args.inputFileName, encoding='utf-8') as inputFile:
         try:
-            data = json.load(inputFile)
-        except json.JSONDecodeError:
+            data = load(inputFile)
+        except JSONDecodeError:
             print('Could not parse the input file.')
             exit(1)
     # do parsing
