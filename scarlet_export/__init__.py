@@ -62,8 +62,10 @@ def main():
     for tag in data['tags']:
         tags[tag['uuid']] = tag['title']
     folders = {}
-    for folder in data['folders']:
-        folders[folder['uuid']] = folder['title']
+    # folders are only available in Scarlet v6 and later
+    if 'folders' in data:
+        for folder in data['folders']:
+            folders[folder['uuid']] = folder['title']
     for note in data['notes']:
         parsedNote = Note(note, tags, folders)
         notes.append(parsedNote)

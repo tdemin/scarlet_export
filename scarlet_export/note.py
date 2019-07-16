@@ -13,10 +13,11 @@ class Note:
     """
     def __init__(self, note, tags, folders):
         self.uuid = note['uuid']
-        if note['folder'] != '':
-            self.folder = folders[note['folder']]
-        else:
-            self.folder = ''
+        # folders are only available since Scarlet v6
+        if 'folder' in note:
+            if note['folder'] != '':
+                self.folder = folders[note['folder']]
+        else: self.folder = ''
         self.updateTimestamp = int(note['updateTimestamp'])
         self.timestamp = int(note['timestamp'])
         self.tags = []
